@@ -1,19 +1,23 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:momamia/model/menu.dart';
 
 class ApiService {
-  static const String baseUrl = '내서버 주소';
-  static const String menus = 'menu가져오는 url';
+  static const String baseUrl = 'http://main.gesazumoo.kro.kr/api/webhook';
+  static const String getMenuList = 'menu';
 
-  static getMenus() async {
-    final url = Uri.http('authority', 'dd');
+  static Future<List<MenuModel>> getMenus() async {
+    final url = Uri.parse('$baseUrl/$getMenuList');
     final res = await http.get(url);
+    final List<MenuModel> menuList = [];
     if (res.statusCode == 200) {
-      final jsonRes = jsonDecode(res.body) as Map<String, dynamic>;
-      print('$jsonRes');
-    } else {
-      print('Request failed with status.');
+      final List<dynamic> menus = jsonDecode(res.body);
+      for (var menu in menus) {
+        menuList.add(MenuModel.fromJson(menu['json']));
+      }
+      return menuList;
     }
+    throw Error();
   }
 }

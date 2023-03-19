@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:momamia/model/menu.dart';
+import 'package:momamia/services/api_service.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreen extends StatelessWidget {
   final momaList = [
     '압맥밥 새우바지락들깨국 (9.13.18.) 오리훈제&소스 (1.2.5.6.) 무장아찌숙주무침 배추김치 (9.) 우유 (2.)',
     '흰밥 순두부찌개 (1.5.10.) 시금치무침 어묵잡채 (1.5.6.) 총각김치 (9.) 우유 (2.)',
@@ -26,6 +21,9 @@ class _HomeScreenState extends State<HomeScreen> {
     '777777',
     '8888888',
   ];
+
+  HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,33 +33,56 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           const Text('2023-03-02(목)'),
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              scrollDirection: Axis.vertical,
-              itemBuilder: (context, index) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  height: 100,
-                  decoration: BoxDecoration(color: Colors.brown.shade100),
-                  alignment: Alignment.center,
-                  child: Text(
-                    momaList[index],
-                    style: const TextStyle(
-                      fontSize: 15,
-                    ),
-                  ),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return const SizedBox(
-                  height: 10,
-                );
-              },
-              itemCount: momaList.length,
-            ),
+          FutureBuilder(
+            future: ApiService.getMenus(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return MenuList(menuList: snapshot.data!);
+              } else {
+                return const Text('dd');
+              }
+            },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class MenuList extends StatelessWidget {
+  const MenuList({
+    super.key,
+    required this.menuList,
+  });
+
+  final List<MenuModel> menuList;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        scrollDirection: Axis.vertical,
+        itemBuilder: (context, index) {
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            height: 100,
+            decoration: BoxDecoration(color: Colors.brown.shade100),
+            alignment: Alignment.center,
+            child: Text(
+              menuList[index].menu,
+              style: const TextStyle(
+                fontSize: 15,
+              ),
+            ),
+          );
+        },
+        separatorBuilder: (context, index) {
+          return const SizedBox(
+            height: 10,
+          );
+        },
+        itemCount: menuList.length,
       ),
     );
   }
