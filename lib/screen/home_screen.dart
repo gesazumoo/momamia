@@ -30,20 +30,23 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('title'),
       ),
-      body: Column(
-        children: [
-          const Text('2023-03-02(목)'),
-          FutureBuilder(
-            future: ApiService.getMenus(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return MenuList(menuList: snapshot.data!);
-              } else {
-                return const Text('dd');
-              }
-            },
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        child: Column(
+          children: [
+            FutureBuilder(
+              future: ApiService.getMenus(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return MenuList(menuList: snapshot.data!);
+                } else {
+                  return const Expanded(
+                      child: Center(child: CircularProgressIndicator()));
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -61,19 +64,28 @@ class MenuList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
         scrollDirection: Axis.vertical,
         itemBuilder: (context, index) {
           return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            height: 100,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            height: 150,
             decoration: BoxDecoration(color: Colors.brown.shade100),
-            alignment: Alignment.center,
-            child: Text(
-              menuList[index].menu,
-              style: const TextStyle(
-                fontSize: 15,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(DateUtil().formattedDate(DateTime.parse(menuList[index].createDate)), style: const TextStyle()),
+                Text(
+                  menuList[index].menu,
+                  style: const TextStyle(
+                    fontSize: 15,
+                  ),
+                ),
+                const Align(
+                  alignment: Alignment.centerRight,
+                  child: Text('조리사이름'),
+                ),
+              ],
             ),
           );
         },
