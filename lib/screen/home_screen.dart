@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:momamia/model/menu.dart';
 import 'package:momamia/services/api_service.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatelessWidget {
   final momaList = [
@@ -60,6 +61,12 @@ class MenuList extends StatelessWidget {
 
   final List<MenuModel> menuList;
 
+  String convertToDate(String dateString) {
+    final dateTime = DateTime.parse(dateString);
+    final formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
+    return formattedDate;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -74,7 +81,8 @@ class MenuList extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Text(DateUtil().formattedDate(DateTime.parse(menuList[index].createDate)), style: const TextStyle()),
+                Text(convertToDate(menuList[index].createDate),
+                    style: const TextStyle()),
                 Text(
                   menuList[index].menu,
                   style: const TextStyle(
