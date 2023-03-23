@@ -5,10 +5,12 @@ import 'package:momamia/model/menu.dart';
 
 class ApiService {
   static const String baseUrl = 'http://main.gesazumoo.kro.kr/api/webhook';
-  static const String getMenuList = 'menu';
+  static const String menuUrl = 'menu';
+  static const String menuDetailUrl =
+      'cbc05dd7-bf74-45ba-8658-062e7c70af71/menu';
 
   static Future<List<MenuModel>> getMenus() async {
-    final url = Uri.parse('$baseUrl/$getMenuList');
+    final url = Uri.parse('$baseUrl/$menuUrl');
     final res = await http.get(url);
     final List<MenuModel> menuList = [];
     if (res.statusCode == 200) {
@@ -17,6 +19,23 @@ class ApiService {
         menuList.add(MenuModel.fromJson(menu['json']));
       }
       return menuList;
+    }
+    throw Error();
+  }
+
+  static Future<MenuModel> getMenuDetail(String id) async {
+    final url = Uri.parse('$baseUrl/$menuDetailUrl/$id');
+    print(url);
+    final res = await http.get(url);
+    final MenuModel menuDetail;
+    try {
+      if (res.statusCode == 200) {
+        final menu = jsonDecode(res.body);
+        menuDetail = MenuModel.fromJson(menu[0]['json']);
+        return menuDetail;
+      }
+    } catch (e) {
+      print(e);
     }
     throw Error();
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:momamia/model/menu.dart';
+
 import 'package:momamia/services/api_service.dart';
-import 'package:intl/intl.dart';
+import 'package:momamia/widgets/MenuList.dart';
 
 class HomeScreen extends StatelessWidget {
   final momaList = [
@@ -48,61 +48,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class MenuList extends StatelessWidget {
-  const MenuList({
-    super.key,
-    required this.menuList,
-  });
-
-  final List<MenuModel> menuList;
-
-  String convertToDate(String dateString) {
-    final dateTime = DateTime.parse(dateString);
-    final formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
-    return formattedDate;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.separated(
-        scrollDirection: Axis.vertical,
-        itemBuilder: (context, index) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            height: 150,
-            decoration: BoxDecoration(color: Colors.brown.shade100),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Text(convertToDate(menuList[index].createDate),
-                    style: const TextStyle()),
-                Text(
-                  menuList[index].menu,
-                  style: const TextStyle(
-                    fontSize: 15,
-                  ),
-                ),
-                const Align(
-                  alignment: Alignment.centerRight,
-                  child: Text('조리사이름'),
-                ),
-              ],
-            ),
-          );
-        },
-        separatorBuilder: (context, index) {
-          return const SizedBox(
-            height: 10,
-          );
-        },
-        itemCount: menuList.length,
       ),
     );
   }

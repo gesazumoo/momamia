@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class MenuModel {
   final String id;
   final String note;
@@ -19,12 +21,19 @@ class MenuModel {
     required this.kindergartenId,
   });
 
+  static String convertToDate(String? dateString) {
+    if (dateString == null) return '';
+    final dateTime = DateTime.parse(dateString);
+    final formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
+    return formattedDate;
+  }
+
   MenuModel.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         note = json['note'],
-        createDate = json['createDate'],
-        updateDate = json['updateDate'],
-        eatingDate = json['eatingDate'],
+        createDate = convertToDate(json['createDate']),
+        updateDate = convertToDate(json['updateDate']),
+        eatingDate = convertToDate(json['eatingDate']),
         cookId = json['cookId'],
         menu = json['menu'],
         kindergartenId = json['kindergartenId'];
