@@ -1,0 +1,153 @@
+{
+  "name": "Get /menu detail",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "menu/:id",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "73e9c288-b5c2-4cab-821f-aa2814f327e8",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        100
+      ],
+      "webhookId": "cbc05dd7-bf74-45ba-8658-062e7c70af71"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($input.all()) }}",
+        "options": {}
+      },
+      "id": "03b9b63f-c4ca-4f7d-913e-d042e87da75e",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        360,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT * from public.menu where id='{{ $json[\"id\"] }}'",
+        "additionalFields": {}
+      },
+      "id": "fd3e55a2-25b4-49c6-a64a-f468780bae1a",
+      "name": "Postgres",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        100
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "function convertKeysToCamelCase(obj) {\n  const newObj = {};\n  for (let key in obj) {\n    const newKey = key.replace(/_([a-z])/g, function (m, p1) {\n      return p1.toUpperCase();\n    });\n    newObj[newKey] = obj[key];\n  }\n  return newObj;\n}\n\nconst result = []\n$input.all().forEach(i => {\n  result.push(convertKeysToCamelCase(i.json))\n})\n\nreturn result"
+      },
+      "id": "de60c488-126a-4772-9e0b-a28c5527cbc5",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        100,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "id",
+              "value": "={{ $json[\"params\"][\"id\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5945dae6-e48f-4d28-8134-d18e12b13d15",
+      "name": "Set",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        100
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set": {
+      "main": [
+        [
+          {
+            "node": "Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "versionId": "b4d16052-ee6f-4896-ad4c-127ce9e078c1",
+  "id": "4",
+  "meta": {
+    "instanceId": "9280207ec38db86a3f580da942b23f346bdae991505672c71b89be17254cdc56"
+  },
+  "tags": [
+    {
+      "createdAt": "2023-03-17T00:58:58.624Z",
+      "updatedAt": "2023-03-17T00:58:58.624Z",
+      "id": "1",
+      "name": "api"
+    }
+  ]
+}
