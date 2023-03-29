@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:momamia/model/kindergarten.dart';
 import 'package:momamia/model/menu.dart';
 
 class ApiService {
   static const String baseUrl = 'http://main.gesazumoo.kro.kr/api/webhook';
   static const String menuUrl = 'menu';
+  static const String kindergartenUrl = 'kindergarten';
   static const String menuDetailUrl =
       'cbc05dd7-bf74-45ba-8658-062e7c70af71/menu';
 
@@ -19,6 +21,20 @@ class ApiService {
         menuList.add(MenuModel.fromJson(menu['json']));
       }
       return menuList;
+    }
+    throw Error();
+  }
+
+  static Future<List<KindergartenModel>> getKindergartens() async {
+    final url = Uri.parse('$baseUrl/$kindergartenUrl');
+    final res = await http.get(url);
+    final List<KindergartenModel> kinderList = [];
+    if (res.statusCode == 200) {
+      final List<dynamic> menus = jsonDecode(res.body);
+      for (var menu in menus) {
+        kinderList.add(KindergartenModel.fromJson(menu['json']));
+      }
+      return kinderList;
     }
     throw Error();
   }
