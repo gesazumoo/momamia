@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:momamia/screen/home.dart';
 import 'package:momamia/screen/kindergarten.dart';
+import 'package:momamia/screen/search.dart';
 import 'package:momamia/screen/setting_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
@@ -19,11 +20,15 @@ class MyApp extends StatelessWidget {
     return PersistentTabView(
       context,
       controller: _controller,
-      screens: [Kindergarten(), const Home(), const Setting()],
+      screens: [Kindergarten(), const Search(), const Home(), const Setting()],
       items: [
         PersistentBottomNavBarItem(
           icon: const Icon(CupertinoIcons.home),
           title: ('Home'),
+        ),
+        PersistentBottomNavBarItem(
+          icon: const Icon(CupertinoIcons.search),
+          title: ('Search'),
         ),
         PersistentBottomNavBarItem(
           icon: const Icon(CupertinoIcons.home),
